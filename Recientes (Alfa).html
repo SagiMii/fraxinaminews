@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hentai Recientes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 250px; /* Relación de aspecto 16:9 */
+            overflow: hidden;
+            margin-bottom: 20px;
+
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease;
+            width: 100%;
+            height: 100%;
+        }
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .slide a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            text-decoration: none;
+        }
+        .slide-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            color: white;
+            padding: 4px 8px;
+            background: transparent; /* Fondo transparente */
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            text-shadow: 
+                0 0 10px rgba(0, 0, 0, 1),   /* Brillo negro más intenso */
+                0 0 20px rgba(0, 0, 0, 1),   /* Brillo negro más extendido */
+                0 0 30px rgba(0, 0, 0, 1),   /* Brillo negro aún más extendido */
+                0 0 40px rgba(0, 0, 0, 1),   /* Brillo negro máximo */
+                0 0 5px rgba(0, 0, 0, 1);    /* Borde negro más grueso */
+            text-align: left; /* Alineación a la izquierda */
+        }
+        .prev, .next {
+
+    cursor: pointer;
+
+    position: absolute;
+
+    top: 50%;
+
+    width: auto;
+
+    padding: 10px; /* Ajusta el tamaño del padding */
+
+    font-size: 27px; /* Ajusta el tamaño del ícono */
+
+    color: white;
+
+    background-color: transparent; /* Fondo transparente */
+
+    border: none; /* Sin borde */
+
+    text-shadow: 0 0 5px black; /* Crea un borde alrededor del texto con sombra negra */
+
+    z-index: 10;
+
+    transform: translateY(-50%); /* Centra verticalmente */
+
+    transition: color 0.3s ease; /* Suaviza la transición del color */
+
+}
+
+.prev:hover, .next:hover {
+
+    color: black; /* Color de la flecha al pasar el ratón */
+
+}
+
+.next {
+
+    right: 0px; /* Ajusta la posición horizontal */
+
+}
+
+.prev {
+
+    left: 0px; /* Ajusta la posición horizontal */
+
+}
+        .recommendations {
+            margin-top: 20px;
+        }
+        .recommendations h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .recommendations-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 0 20px;
+            justify-items: center;
+        }
+        .recommendation {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            width: 100%;
+            position: relative; /* Agregar esto para posicionar la etiqueta */
+        }
+.recommendation img {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+
+    image-rendering: auto;         /* Deja que el navegador decida lo mejor */
+    -ms-interpolation-mode: bicubic; /* Para IE (por si acaso) */
+    image-rendering: optimizeQuality; /* Para navegadores que lo soporten */
+    backface-visibility: hidden;   /* Suaviza en algunos casos */
+    transform: translateZ(0);      /* Mejora en algunos motores de renderizado */
+}
+
+        .card-content {
+            padding: 4px 4px 8px 8px;
+            text-align: left;
+            min-height: 50px;
+        }
+        .card-content h3 {
+            font-size: 13px;
+            margin: 5px 0;
+            text-align: left; /* Alineación a la izquierda */
+        }
+        
+
+.episode-label {
+    position: absolute;
+    top: 4px; /* Espacio desde el borde superior */
+    right: 4px; /* Espacio desde el borde derecho */
+    background: white; /* Fondo blanco */
+    color: black; /* Texto negro */
+    padding: 2px 8px; /* Padding menor en la parte superior e inferior */
+    border-radius: 12px; /* Bordes redondeados más pronunciados */
+    font-size: 10px; /* Tamaño de fuente pequeño */
+    font-weight: 400; /* Peso de fuente ligero */
+    
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Sombra ligera */
+    display: flex; /* Usa flexbox para centrar el texto */
+    align-items: center; /* Centra verticalmente el texto */
+    justify-content: center; /* Centra horizontalmente el texto */
+    line-height: 1.2; /* Ajusta la altura de línea para reducir el espacio vertical */
+    height: auto; /* Ajusta la altura automáticamente según el contenido */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    border: 1px solid black; /* Borde negro fino alrededor del fondo */
+}
+
+    .episode-label {
+
+        font-size: 10px; /* Ajustar tamaño en pantallas grandes */
+
+        padding: 2px 4px; /* Ajustar padding en pantallas grandes */
+
+    }
+
+}
+        /* Media Query para pantallas más pequeñas */
+        @media (max-width: 768px) {
+            .recommendation {
+                flex: 1 1 calc(50% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            .recommendation {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+  
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgx4JbiOZEkZoLXTB8r76AV8yrmMfKp8CAM-L120d7X3V4AKCfmKPpdt30uKMwa540xP0n_tdROnbfrnf_LEvp0E7MQ2pf48XpQ1t14nfEgNZQ00ja09pReRr5YMPQVOee4yJ_hFTfeZZ7a6LTFaRzaJqImorVVZNCN7O9ATS7x3rZXRQvfWKPj8n08esJI/s1599/IMG-20240804-WA0001.jpg" alt="Imagen no visible" style="display: none;">
+  
+    <div class="container">
+        <!-- Contenedor del slideshow -->
+        <div class="slideshow-container">
+            <div class="slides" id="slides">
+                <!-- Sección de diapositivas -->
+            </div>
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        </div>
+
+        <!-- Contenedor de recomendaciones -->
+        <div class="recommendations">
+            <h1>Episodios Recientes</h1>
+            <div class="recommendations-container" id="recommendations-container">
+                <!-- Sección de recomendaciones generada por JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slidesData = [
+            {
+                img: "https://hentaitk.net/wp-content/uploads/2024/10/vlcsnap-2024-11-21-16h30m38s291.png",
+                label: "Episodio 1",  // Etiqueta de episodio
+                title: "Mecha Gishi Rista no Daibouken",
+                link: "https://www.animertr.com/2024/11/Mecha-Gishi-Resta-no-Daibouken.html"
+            },
+            {
+                img: "https://www5.hentaila.com/uploads/fondos/1094.jpg",
+                label: "Episodio 1",  // Etiqueta de episodio
+                title: "Kyokugen Chikan Tokuiten 3 The Animation",
+                link: "https://www.animertr.com/2024/10/Kyokugen-Chikan-Tokuiten-3-The-Animation.html"
+            },
+            {
+                img: "https://www5.hentaila.com/uploads/fondos/1092.jpg",
+                label: "Episodio 1",  // Etiqueta de episodio
+                title: "Tsuma Netori Rei",
+                link: "https://www.animertr.com/"
+            },
+            {
+                img: "https://www5.hentaila.com/uploads/fondos/1088.jpg",
+                label: "Episodio 1",  // Etiqueta de episodio
+                title: "Futsuma Shoujo Charlotte",
+                link: "https://www.animertr.com/"
+            },
+            {
+
+                img: "https://www5.hentaila.com/uploads/fondos/1087.jpg",
+                label: "Episodio 1",  // Etiqueta de episodio
+                title: "Shounen ga Otona ni Natta Natsu",
+                link: "https://www.animertr.com/"
+
+            },
+            {
+
+                img: "https://www.xanimeporn.com/wp-content/uploads/2024/10/Sex-ga-Suki-de-Suki-de-Daisuki-na-Classmate-no-Anoko-1.jpg",
+                label: "Episodio 1 y 2",  // Etiqueta de episodio
+                title: "Sex ga Suki de Suki de Daisuki na Classmate no Ano Musume",
+                link: "https://www.animertr.com/"
+
+            },
+            {
+
+                img: "https://www5.hentaila.com/uploads/fondos/1085.jpg",
+                label: "Episodio 1 y 2",  // Etiqueta de episodio
+                title: "InCha Couple ga You Gal-tachi to Sex Training Suru Hanashi",
+                link: "https://www.animertr.com/"
+
+            },
+            {
+
+                img: "https://veohentai.com/wp-content/uploads/2024/09/95781h.jpg",
+                label: "Episodio 1",  // Etiqueta de episodio
+                title: "Reginetta-san no Bouken",
+                link: "https://www.animertr.com/"
+
+            },
+            {
+
+                img: "https://www5.hentaila.com/uploads/portadas/1130.jpg",
+                label: "Episodio 1",  // Etiqueta de episodio
+                title: "Bubble de House de Marumarumaru The Animation",
+                link: "https://www.animertr.com/"
+
+            },
+            {
+
+                img: "https://hentaitk.net/wp-content/uploads/2024/06/bfab5296c1b4039e0b0266d40ea35aec-1024x717-1-e1717812430318.jpg",
+                label: "Episodio 1 y 2",  // Etiqueta de episodio
+                title: "Imaria",
+                link: "https://www.animertr.com/"
+
+            },
+            {
+
+                img: "https://www5.hentaila.com/uploads/fondos/1078.jpg",
+                label: "Episodio 1 y 2",  // Etiqueta de episodio
+                title: "Seiyoku Tsuyotsuyo The Animation",
+                link: "https://www.animertr.com/"
+
+            },
+            {
+
+                img: "https://veohentai.com/wp-content/uploads/2024/08/c1281474sample11.jpg",
+                label: "Episodio 1 y 2",  // Etiqueta de episodio
+                title: "Ito o Yoru",
+                link: "https://www.animertr.com/"
+
+            },
+          
+            // Agrega más objetos aquí
+        ];
+
+        const recommendationsContainer = document.getElementById('recommendations-container');
+
+        slidesData.forEach(cover => {
+            const recommendationElement = document.createElement('a');
+            recommendationElement.className = 'recommendation';
+            recommendationElement.href = cover.link;
+            recommendationElement.innerHTML = `
+                <img src="${cover.img}" alt="${cover.title}">
+                <div class="card-content">
+                    <div class="episode-label">${cover.label}</div>
+                    <h3>${cover.title}</h3>
+                </div>
+            `;
+            recommendationsContainer.appendChild(recommendationElement);
+        });
+
+        let currentSlide = 0;
+let slideInterval;
+
+// Función para mostrar el slide actual
+function showSlides() {
+    const slides = document.getElementById('slides');
+    slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+}
+
+// Función para avanzar manualmente
+function plusSlides(n) {
+    currentSlide += n;
+    const totalSlides = document.querySelectorAll('.slide').length;
+    if (currentSlide >= totalSlides) {
+        currentSlide = 0;
+    } else if (currentSlide < 0) {
+        currentSlide = totalSlides - 1;
+    }
+    showSlides();
+    resetSlideInterval(); // Reinicia el contador automático
+}
+
+// Función para reiniciar el intervalo automático
+function resetSlideInterval() {
+    clearInterval(slideInterval);
+    slideInterval = setInterval(() => {
+        plusSlides(1);
+    }, 4000); // 4 segundos
+}
+
+// Inicializar diapositivas
+slidesData.forEach((cover, index) => {
+    const slideElement = document.createElement('div');
+    slideElement.className = 'slide';
+    slideElement.style.backgroundImage = `url(${cover.img})`;
+    slideElement.innerHTML = `
+        <a href="${cover.link}">
+            <div class="episode-label">${cover.label}</div>
+            <div class="slide-title">${cover.title}</div>
+        </a>
+    `;
+    document.getElementById('slides').appendChild(slideElement);
+});
+
+showSlides();
+resetSlideInterval(); // Inicia el conteo automático
+
+    </script>
+</body>
+</html>
